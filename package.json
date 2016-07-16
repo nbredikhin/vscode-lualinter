@@ -3,7 +3,7 @@
     "displayName": "Lua linter",
     "description": "Lint Lua scripts with luac",
     "homepage": "https://github.com/dcr30/vscode-lualinter#readme",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "publisher": "dcr30",
     "icon": "icon.svg",
     "galleryBanner": {
@@ -20,6 +20,24 @@
         "onLanguage:lua"
     ],
     "main": "./out/src/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Lua linter configuration",
+            "properties": {
+                "lualinter.enable": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable Lua linter"
+                },
+                "lualinter.warnOnSave": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Show warning message if there is an error when saving a file"
+                }
+            }
+        }
+    },
     "scripts": {
         "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
         "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
