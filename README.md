@@ -4,7 +4,7 @@ A simple [Visual Studio Code](https://code.visualstudio.com/) extension to lint 
 
 ![Example screenshot](http://i.imgur.com/hm3dSEC.png)
 
-![Example animation](https://thumbs.gfycat.com/CompassionateMadGalago-size_restricted.gif)
+![Example animation](https://thumbs.gfycat.com/BoringThinCockerspaniel-size_restricted.gif)
 
 ## Requirements
 1. Ensure that `luac` is installed in your system.
@@ -12,11 +12,14 @@ A simple [Visual Studio Code](https://code.visualstudio.com/) extension to lint 
 3. Search and choose `lualinter`.
 
 ## Options
+`"lualinter.enable"` - enable Lua linter
+
+`"lualinter.warnOnSave"` - show warning message if there is an error when saving a file
+
+Default options values are:
 ```json
 {
-    // Enable Lua linter
     "lualinter.enable": true,
-    // Show warning message if there is an error when saving a file
     "lualinter.warnOnSave": false
 }        
 ```
