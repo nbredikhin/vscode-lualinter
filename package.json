@@ -5,6 +5,11 @@
     "homepage": "https://github.com/dcr30/vscode-lualinter#readme",
     "version": "0.0.1",
     "publisher": "dcr30",
+    "icon": "icon.svg",
+    "galleryBanner": {
+        "color": "#A1A1FF",
+        "theme": "dark"
+    }, 
     "engines": {
         "vscode": "^1.0.0"
     },
