@@ -1,7 +1,8 @@
 {
     "name": "lualinter",
     "displayName": "Lua linter",
-    "description": "Lint Lua scripts using luac",
+    "description": "Lint Lua scripts with luac",
+    "homepage": "https://github.com/dcr30/vscode-lualinter#readme",
     "version": "0.0.1",
     "publisher": "dcr30",
     "engines": {
@@ -14,10 +15,6 @@
         "onLanguage:lua"
     ],
     "main": "./out/src/extension",
-    "dependencies": {
-        "vscode-languageclient": "0.10.7",
-        "vscode-languageserver": "0.10.6"
-    },
     "scripts": {
         "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
         "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
