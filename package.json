@@ -1,29 +1,30 @@
 {
-    "name": "lua-linter",
-    "displayName": "lua-linter",
-    "description": "Lint Lua scripts with luac",
+    "name": "lualinter",
+    "displayName": "Lua linter",
+    "description": "Lint Lua scripts using luac",
     "version": "0.0.1",
-    "publisher": "Wherry",
+    "publisher": "dcr30",
     "engines": {
         "vscode": "^1.0.0"
     },
     "categories": [
-        "Other"
+        "Linters"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onLanguage:lua"
     ],
-    "main": "./extension",
-    "contributes": {
-        "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
-        }]
+    "main": "./out/src/extension",
+    "dependencies": {
+        "vscode-languageclient": "0.10.7",
+        "vscode-languageserver": "0.10.6"
     },
     "scripts": {
+        "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+        "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "devDependencies": {
+        "typescript": "^1.8.5",
         "vscode": "^0.11.0"
     }
 }
