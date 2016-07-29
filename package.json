@@ -9,7 +9,7 @@
     "galleryBanner": {
         "color": "#050523",
         "theme": "dark"
-    }, 
+    },
     "engines": {
         "vscode": "^1.0.0"
     },
@@ -34,6 +34,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Show warning message if there is an error when saving a file"
+                },
+                "lualinter.interpreter": {
+                    "type": "string",
+                    "default": "luac",
+                    "description": "Choose between luac and luajit interpreters"
                 }
             }
         }
