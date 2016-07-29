@@ -1,17 +1,16 @@
-'use strict';
+"use strict";
 
-import * as path from 'path';
-import * as vscode from 'vscode';
-import {spawn, ChildProcess} from 'child_process';
+import * as path from "path";
+import * as vscode from "vscode";
+import {spawn, ChildProcess} from "child_process";
 
-const LUAC_OUTPUT_REGEXP = /.+: .+:([0-9]+): (.+) near.*[<'](.*)['>]/;
-const LUAC_COMMAND = 'luac';
+const OUTPUT_REGEXP = /.+: .+:([0-9]+): (.+) near.*[<'](.*)['>]/;
 
 let diagnosticCollection: vscode.DiagnosticCollection;
 let currentDiagnostic: vscode.Diagnostic;
 
 function parseDocumentDiagnostics(document: vscode.TextDocument, luacOutput: string) {
-    const matches = LUAC_OUTPUT_REGEXP.exec(luacOutput);
+    const matches = OUTPUT_REGEXP.exec(luacOutput);
     if (!matches) {
         return;
     }
@@ -29,7 +28,7 @@ function parseDocumentDiagnostics(document: vscode.TextDocument, luacOutput: str
     var rangeLine = message.line - 1;
     var rangeStart = new vscode.Position(rangeLine, 0);
     var rangeEnd = new vscode.Position(rangeLine, errorLine.length);
-    if (message.at !== 'eof') {
+    if (message.at !== "eof") {
         var linePosition = errorLine.indexOf(message.at);
         if (linePosition >= 0) {
             rangeStart = new vscode.Position(rangeLine, linePosition);
@@ -37,16 +36,16 @@ function parseDocumentDiagnostics(document: vscode.TextDocument, luacOutput: str
         }
     }
     var range = new vscode.Range(rangeStart, rangeEnd);
-    currentDiagnostic = new vscode.Diagnostic(range, message.text, vscode.DiagnosticSeverity.Error); 
+    currentDiagnostic = new vscode.Diagnostic(range, message.text, vscode.DiagnosticSeverity.Error);
 }
 
 function lintDocument(document: vscode.TextDocument, warnOnError: Boolean = false) {
     let lualinterConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('lualinter');
-    if (!lualinterConfig.get('enable')) {
+    if (!lualinterConfig.get("enable")) {
         return;
     }
 
-    if (document.languageId !== 'lua') {
+    if (document.languageId !== "lua") {
         return;
     }
     currentDiagnostic = null;
@@ -54,28 +53,42 @@ function lintDocument(document: vscode.TextDocument, warnOnError: Boolean = fals
     const options = {
         cwd: path.dirname(document.fileName)
     };
-    var luacProcess: ChildProcess = spawn(LUAC_COMMAND, ['-p', '-'], options);
-    luacProcess.stdout.setEncoding('utf8');
-    luacProcess.stderr.on('data', (data: Buffer) => {
+
+    // Determine the interpreter to use
+    let interpreter = lualinterConfig.get<string>("interpreter");
+    if ((interpreter !== "luac") && (interpreter !== "luajit")) {
+        interpreter = "luac";
+    }
+
+    let cmd;
+    if (interpreter === "luac") {
+        cmd = "-p";
+    } else {
+        cmd = "-bl";
+    }
+    
+    var luaProcess: ChildProcess = spawn(interpreter, [cmd, "-"], options);
+    luaProcess.stdout.setEncoding("utf8");
+    luaProcess.stderr.on("data", (data: Buffer) => {
         if (data.length == 0) {
             return;
         }
         parseDocumentDiagnostics(document, data.toString());
     });
-    luacProcess.stderr.on('error', error => {
-        vscode.window.showErrorMessage('luac error: ' + error);
+    luaProcess.stderr.on("error", error => {
+        vscode.window.showErrorMessage(interpreter + " error: " + error);
     });
-    // Pass current file contents to luac's stdin
-    luacProcess.stdin.end(new Buffer(document.getText()));
-    luacProcess.on('exit', (code: number, signal: string) => {
+    // Pass current file contents to lua's stdin
+    luaProcess.stdin.end(new Buffer(document.getText()));
+    luaProcess.on("exit", (code: number, signal: string) => {
         if (!currentDiagnostic) {
             diagnosticCollection.clear();
         } else {
             diagnosticCollection.set(document.uri, [currentDiagnostic]);
 
-            // Optionally show warining message 
-            if (warnOnError && lualinterConfig.get('warnOnSave')) {
-                vscode.window.showWarningMessage(`Current file contains an error: "${currentDiagnostic.message}" at line ${currentDiagnostic.range.start.line}`);
+            // Optionally show warining message
+            if (warnOnError && lualinterConfig.get<boolean>("warnOnSave")) {
+                vscode.window.showWarningMessage("Current file contains an error: '${currentDiagnostic.message}' at line ${currentDiagnostic.range.start.line}");
             }
         }
     });

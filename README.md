@@ -1,6 +1,6 @@
 # vscode-lualinter
 
-A simple [Visual Studio Code](https://code.visualstudio.com/) extension to lint Lua scripts with [luac -p](https://www.lua.org/manual/5.1/luac.html).
+A simple [Visual Studio Code](https://code.visualstudio.com/) extension to lint Lua scripts with `luac -p` or `luajit -bl`.
 
 ![Example screenshot](http://i.imgur.com/hm3dSEC.png)
 
@@ -16,11 +16,14 @@ A simple [Visual Studio Code](https://code.visualstudio.com/) extension to lint 
 
 `"lualinter.warnOnSave"` - show warning message if there is an error when saving a file
 
-Default options values are:
+`"lualinter.interpreter"` - choose between `luac` and `luajit` interpreters
+
+Default options are:
 ```json
 {
     "lualinter.enable": true,
-    "lualinter.warnOnSave": false
+    "lualinter.warnOnSave": false,
+    "lualinter.interpreter": "luac"
 }        
 ```
 
